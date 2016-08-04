@@ -3,6 +3,23 @@
 [![Gem Version](https://badge.fury.io/rb/jekyll-postfiles.svg)](https://badge.fury.io/rb/jekyll-postfiles)
 [![Gem Downloads](https://img.shields.io/gem/dt/jekyll-postfiles.svg?style=flat)](http://rubygems.org/gems/jekyll-postfiles)
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Table of contents
+
+- [Easing the management of images (and other files) attached to Markdown posts](#easing-the-management-of-images-and-other-files-attached-to-markdown-posts)
+  - [The pain of Jekyll's recommended posts assets management](#the-pain-of-jekylls-recommended-posts-assets-management)
+  - [There must be another way](#there-must-be-another-way)
+  - [Not every assets need this](#not-every-assets-need-this)
+- [How does it work?](#how-does-it-work)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Thanks](#thanks)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Easing the management of images (and other files) attached to Markdown posts
 
 ### The pain of Jekyll's recommended posts assets management
