@@ -5,6 +5,7 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 ## Table of contents
 
 - [Easing the management of images (and other files) attached to Markdown posts](#easing-the-management-of-images-and-other-files-attached-to-markdown-posts)
@@ -183,7 +184,7 @@ gem 'jekyll-postfiles'
 Execute this:
 
 ```shell
-$ bundle
+bundle
 ```
 
 And add this line to your `_config.yml`:
