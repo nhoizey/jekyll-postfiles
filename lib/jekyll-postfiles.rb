@@ -43,8 +43,11 @@ module Jekyll
       contents = Dir.glob(File.join(postdir, '**', '*')) do |filepath|
         if filepath != postpath
           filedir, filename = File.split(filepath[sitesrcdir.length..-1])
-          site.static_files <<
-            PostFile.new(site, sitesrcdir, filedir, filename, destdir)
+          filereldir, filename = File.split(filepath[postdir.length..-1])
+          if File.file?(filepath)
+           site.static_files <<
+             PostFile.new(site, sitesrcdir, filedir, filename, destdir + filereldir)
+          end
         end
       end
     end
