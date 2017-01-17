@@ -38,6 +38,11 @@ module Jekyll
       site = post.site
       site_src_dir = site.source
 
+      # Jekyll.logger.warn(
+      #   "[PostFiles]",
+      #   "Current post: #{post_path[site_src_dir.length..-1]}"
+      # )
+
       post_dir = File.dirname(post_path)
       dest_dir = File.dirname(post.destination(""))
 
@@ -53,6 +58,10 @@ module Jekyll
         if filepath != post_path \
             && !File.directory?(filepath) \
             && !File.fnmatch?('*.{md,markdown}', filepath, File::FNM_EXTGLOB | File::FNM_CASEFOLD)
+          # Jekyll.logger.warn(
+          #   "[PostFiles]",
+          #   "-> attachment: #{filepath[site_src_dir.length..-1]}"
+          # )
           if other_md_count > 0
             Jekyll.logger.abort_with(
               "[PostFiles]",
