@@ -43,6 +43,14 @@ module Jekyll
       post_dir = File.dirname(post_path)
       dest_dir = File.dirname(post.destination(""))
       contents = Dir.glob(File.join(post_dir, '**', '*')) do |filepath|
+      # Count other Markdown files in the same directory
+      other_md_count = 0
+      other_md = Dir.glob(File.join(post_dir, '*.{md,markdown}'), File::FNM_CASEFOLD) do |mdfilepath|
+        if mdfilepath != post_path
+          other_md_count += 1
+        end
+      end
+
           site.static_files <<
             PostFile.new(site, site_src_dir, filedir, filename, dest_dir)
         end
