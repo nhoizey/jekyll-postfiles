@@ -34,12 +34,13 @@ module Jekyll
     # post - A Post which may have associated content.
     def copy_post_files(post)
 
-
       post_path = post.path
       site = post.site
       site_src_dir = site.source
+
       post_dir = File.dirname(post_path)
       dest_dir = File.dirname(post.destination(""))
+
       # Count other Markdown files in the same directory
       other_md_count = 0
       other_md = Dir.glob(File.join(post_dir, '*.{md,markdown}'), File::FNM_CASEFOLD) do |mdfilepath|
@@ -52,6 +53,13 @@ module Jekyll
         if filepath != post_path \
             && !File.directory?(filepath) \
             && !File.fnmatch?('*.{md,markdown}', filepath, File::FNM_EXTGLOB | File::FNM_CASEFOLD)
+          if other_md_count > 0
+            Jekyll.logger.abort_with(
+              "[PostFiles]",
+              "Sorry, there can be only one Markdown file in each directory containing other assets to be copied by jekyll-postfiles"
+            )
+          end
+          filedir, filename = File.split(filepath[site_src_dir.length..-1])
           site.static_files <<
             PostFile.new(site, site_src_dir, filedir, filename, dest_dir)
         end
