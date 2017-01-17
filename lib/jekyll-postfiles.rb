@@ -37,8 +37,6 @@ module Jekyll
 
       post_path = post.path
       site = post.site
-        if filepath != postpath
-          filedir, filename = File.split(filepath[sitesrcdir.length..-1])
       site_src_dir = site.source
       post_dir = File.dirname(post_path)
       dest_dir = File.dirname(post.destination(""))
@@ -51,6 +49,9 @@ module Jekyll
       end
 
       contents = Dir.glob(File.join(post_dir, '*')) do |filepath|
+        if filepath != post_path \
+            && !File.directory?(filepath) \
+            && !File.fnmatch?('*.{md,markdown}', filepath, File::FNM_EXTGLOB | File::FNM_CASEFOLD)
           site.static_files <<
             PostFile.new(site, site_src_dir, filedir, filename, dest_dir)
         end
