@@ -34,17 +34,17 @@ module Jekyll
     # post - A Post which may have associated content.
     def copy_post_files(post)
 
-      postpath = post.path
-      postdir = File.dirname(postpath)
-      destdir = File.dirname(post.destination(""))
 
+      post_path = post.path
       site = post.site
-      sitesrcdir = site.source
-      contents = Dir.glob(File.join(postdir, '**', '*')) do |filepath|
         if filepath != postpath
           filedir, filename = File.split(filepath[sitesrcdir.length..-1])
+      site_src_dir = site.source
+      post_dir = File.dirname(post_path)
+      dest_dir = File.dirname(post.destination(""))
+      contents = Dir.glob(File.join(post_dir, '**', '*')) do |filepath|
           site.static_files <<
-            PostFile.new(site, sitesrcdir, filedir, filename, destdir)
+            PostFile.new(site, site_src_dir, filedir, filename, dest_dir)
         end
       end
     end
