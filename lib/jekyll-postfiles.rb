@@ -29,7 +29,7 @@ module Jekyll
   Hooks.register :site, :after_reset do |site|
     # Suppress warning messages.
     original_verbose, $VERBOSE = $VERBOSE, nil
-    Document.const_set('DATE_FILENAME_MATCHER', %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-([^/]*)(\.[^.]+)$!)
+    Document.const_set('DATE_FILENAME_MATCHER', PostFileGenerator::FIXED_DATE_FILENAME_MATCHER)
     # Activate warning messages again.
     $VERBOSE = original_verbose
   end
@@ -59,6 +59,8 @@ module Jekyll
   end
 
   class PostFileGenerator < Generator
+
+    FIXED_DATE_FILENAME_MATCHER = %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-([^/]*)(\.[^.]+)$!
 
     # Copy the files from post's folder.
     #
@@ -172,19 +174,39 @@ module Jekyll
       # Jekyll.logger.warn("[PostFiles]", "assets: #{assets.map(&:path)}")
       # Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
-      # any directory deeper than _posts containing multiple .md?
-      dirs_with_multi_md = site.posts.docs
-        .map{ |doc| Pathname.new doc.path }
-        .reject{ |path| path.dirname.eql? posts_src_dir }
-        .group_by(&:dirname)
-        .select{ |key,value| value.count > 1 }
+      asset_roots = site.posts.docs
+        .map { |doc| Pathname.new(doc.path).dirname }
+        .reject{ |dirname| dirname.eql? posts_src_dir }
 
-      if (dirs_with_multi_md.any?)
-        Jekyll.logger.abort_with(
-          "[PostFiles]",
-          "Sorry, there can be only one Markdown file in each directory containing other assets to be copied by jekyll-postfiles. Violations: #{dirs_with_multi_md.map{ |key,value| [key.to_s, value.map(&:to_s)] }.to_h}"
-        )
-      end
+      Jekyll.logger.warn("[PostFiles]", "asset_roots: #{asset_roots}")
+
+      asset_roots.each{ |root|
+        Dir[root + '**/*'] do |fname|
+          next if File.directory? fname
+          next if fname =~ FIXED_DATE_FILENAME_MATCHER
+        end
+      }
+
+      Jekyll.logger.warn("[PostFiles]", "assets: #{assets}")
+
+      # any directory deeper than _posts containing multiple .md?
+      # dirs_with_multi_md = site.posts.docs
+      #   .map{ |doc| Pathname.new doc.path }
+      #   .reject{ |path| path.dirname.eql? posts_src_dir }
+      #   .group_by(&:dirname)
+      #   .select{ |key,value| value.count > 1 }
+
+      # if (dirs_with_multi_md.any?)
+      #   Jekyll.logger.abort_with(
+      #     "[PostFiles]",
+      #     "Sorry, there can be only one Markdown file in each directory containing other assets to be copied by jekyll-postfiles. Violations: #{dirs_with_multi_md.map{ |key,value| [key.to_s, value.map(&:to_s)] }.to_h}"
+      #   )
+      # end
+
+      Jekyll.logger.abort_with(
+        "[PostFiles]",
+        "don't panic"
+      )
 
       # markdowns
       #   .map{ |doc| Pathname.new(doc.path) }
