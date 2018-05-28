@@ -174,20 +174,30 @@ module Jekyll
       # Jekyll.logger.warn("[PostFiles]", "assets: #{assets.map(&:path)}")
       # Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
-      asset_roots = site.posts.docs
-        .map { |doc| Pathname.new(doc.path).dirname }
-        .reject{ |dirname| dirname.eql? posts_src_dir }
+      docs_with_dirs = site.posts.docs
+        .reject{ |doc| Pathname.new(doc.path).dirname.eql? posts_src_dir }
 
-      Jekyll.logger.warn("[PostFiles]", "asset_roots: #{asset_roots}")
+      Jekyll.logger.warn("[PostFiles]", "docs_with_dirs: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
 
-      asset_roots.each{ |root|
-        Dir[root + '**/*'] do |fname|
-          next if File.directory? fname
-          next if fname =~ FIXED_DATE_FILENAME_MATCHER
-        end
-      }
+      assets = docs_with_dirs.map{ |doc|
+        dest_dir = Pathname.new(doc.destination("")).dirname
+        Pathname.new(doc.path).dirname.instance_eval{ |asset_root|
+          Dir[asset_root + '**/*']
+            .reject{ |fname| fname =~ FIXED_DATE_FILENAME_MATCHER }
+            .reject{ |fname| File.directory? fname }
+            .map { |fname|
+              path = Pathname.new fname
+              relpath = path.relative_path_from(site_src_dir)
+              filedir, filename = relpath.dirname, relpath.basename
 
-      Jekyll.logger.warn("[PostFiles]", "assets: #{assets}")
+              absfiledir = site_src_dir + filedir
+              new_dir = absfiledir.relative_path_from(asset_root)
+              PostFile.new(site, site_src_dir, filedir, filename, (dest_dir + new_dir).to_path)
+            }
+        }
+      }.flatten
+
+      site.static_files.concat(assets)
 
       # any directory deeper than _posts containing multiple .md?
       # dirs_with_multi_md = site.posts.docs
@@ -203,10 +213,10 @@ module Jekyll
       #   )
       # end
 
-      Jekyll.logger.abort_with(
-        "[PostFiles]",
-        "don't panic"
-      )
+      # Jekyll.logger.abort_with(
+      #   "[PostFiles]",
+      #   "don't panic"
+      # )
 
       # markdowns
       #   .map{ |doc| Pathname.new(doc.path) }
