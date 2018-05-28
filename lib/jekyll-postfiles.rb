@@ -69,8 +69,8 @@ module Jekyll
       posts_src_dir = site_src_dir + '_posts'
       drafts_src_dir = site_src_dir + '_drafts'
 
-      Jekyll.logger.warn("[PostFiles]", "_posts: #{posts_src_dir}")
-      Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
+      # Jekyll.logger.warn("[PostFiles]", "_posts: #{posts_src_dir}")
+      # Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
       docs_with_dirs = site.posts.docs
         .reject{ |doc|
@@ -81,7 +81,7 @@ module Jekyll
           }
         }
 
-      Jekyll.logger.warn("[PostFiles]", "asset_roots: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
+      # Jekyll.logger.warn("[PostFiles]", "asset_roots: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
 
       assets = docs_with_dirs.map{ |doc|
         dest_dir = Pathname.new(doc.destination("")).dirname
