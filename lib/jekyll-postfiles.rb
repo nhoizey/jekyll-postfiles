@@ -4,6 +4,36 @@ require "pathname"
 
 module Jekyll
 
+  # we hook just after the initial site.posts.docs is proposed by:
+  # jekyll/lib/jekyll/readers/post_reader.rb#read_posts
+  #
+  # Hooks.register :site, :post_read do |site|
+  #   FIXED_DATE_FILENAME_MATCHER = %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-([^/]*)(\.[^.]+)$!
+  #   site.posts.docs.concat(site.reader.post_reader.read_publishable)
+  # end
+
+  # there's a bug in the regex Document::DATE_FILENAME_MATCHER:
+  #   %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-(.*)(\.[^.]+)$!
+  # used by:
+  #   jekyll/lib/jekyll/readers/post_reader.rb#read_posts
+  # ultimately this populates:
+  #   site.posts.docs
+  #
+  # the original code's intention was to match:
+  #   all files with a date in the name
+  # but it accidentally matches also:
+  #   all files immediately within a directory whose name contains a date
+  #
+  # our plugin changes the regex
+  #   - avoid false positive when directory name matches date regex
+  Hooks.register :site, :after_reset do |site|
+    # Suppress warning messages.
+    original_verbose, $VERBOSE = $VERBOSE, nil
+    Document.const_set('DATE_FILENAME_MATCHER', %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-([^/]*)(\.[^.]+)$!)
+    # Activate warning messages again.
+    $VERBOSE = original_verbose
+  end
+
   class PostFile < StaticFile
 
     # Initialize a new PostFile.
@@ -108,10 +138,13 @@ module Jekyll
     # the working set (site.posts.docs) is proposed by:
     # jekyll/lib/jekyll/readers/post_reader.rb#read_posts
     #
-    # but this is subjected to a Document::DATE_FILENAME_MATCHER
-    # which filters out deeply-nested items (only folders named like a date can survive)
+    # only documents matching Document::DATE_FILENAME_MATCHER are accepted.
+    # 
+    # post_reader does not intend to support nesting, but accidentally
+    # includes files under any directory whose name matches DATE_FILENAME_MATCHER
     #
-    # moreover, renderers probably expect site.posts.docs to include only markdown
+    # we'll work around this by restoring the world to a ground truth:
+    # 
     def generate(site)
       # site.posts.docs.each do |post|
       #   copy_post_files(post)
@@ -124,20 +157,20 @@ module Jekyll
       Jekyll.logger.warn("[PostFiles]", "_posts: #{posts_src_dir}")
       Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
-      # Reject any .md nested deeper than _posts/dir/post.md
-      site.posts.docs.reject!{ |doc|
-        Pathname.new(doc.path).relative_path_from(posts_src_dir).each_filename.count > 2
-      }
+      # # Reject any .md nested deeper than _posts/dir/post.md
+      # site.posts.docs.reject!{ |doc|
+      #   Pathname.new(doc.path).relative_path_from(posts_src_dir).each_filename.count > 2
+      # }
 
-      markdowns, assets = site.posts.docs.partition{ |doc|
-        ['.md', '.markdown'].include?(Pathname.new(doc.path).extname)
-      }
+      # markdowns, assets = site.posts.docs.partition{ |doc|
+      #   ['.md', '.markdown'].include?(Pathname.new(doc.path).extname)
+      # }
 
-      # reject assets; they are not renderable documents
-      site.posts.docs = markdowns
+      # # reject assets; they are not renderable documents
+      # site.posts.docs = markdowns
 
-      Jekyll.logger.warn("[PostFiles]", "assets: #{assets.map(&:path)}")
-      Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
+      # Jekyll.logger.warn("[PostFiles]", "assets: #{assets.map(&:path)}")
+      # Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
       # any directory deeper than _posts containing multiple .md?
       dirs_with_multi_md = site.posts.docs
@@ -153,11 +186,11 @@ module Jekyll
         )
       end
 
-      markdowns
-        .map{ |doc| Pathname.new(doc.path) }
-        .select{ |path|
-          path.relative_path_from(posts_src_dir).each_filename.count == 2
-        }
+      # markdowns
+      #   .map{ |doc| Pathname.new(doc.path) }
+      #   .select{ |path|
+      #     path.relative_path_from(posts_src_dir).each_filename.count == 2
+      #   }
 
       # Pathname.new('/Users/birch/Documents/tmp').relative_path_from(Pathname.new('/Users/birch')).each_filename.count
     end
