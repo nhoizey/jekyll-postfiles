@@ -39,10 +39,10 @@ module Jekyll
       site = post.site
       site_src_dir = Pathname.new site.source
 
-      # Jekyll.logger.warn(
-      #   "[PostFiles]",
-      #   "Current post: #{post_path[site_src_dir.length..-1]}"
-      # )
+      Jekyll.logger.warn(
+        "[PostFiles]",
+        "Current post: #{post_path[site_src_dir.length..-1]}"
+      )
 
       post_dir = post_path.dirname
       dest_dir = Pathname.new(post.destination("")).dirname
@@ -50,6 +50,12 @@ module Jekyll
       # Count other Markdown files in the same directory
       other_md_count = 0
       other_md = Dir.glob(post_dir + '*.{md,markdown}', File::FNM_CASEFOLD) do |mdfilepath|
+        Jekyll.logger.warn(
+          "[PostFiles]",
+          "mdfilepath: #{mdfilepath}",
+          "post_path.to_path: #{post_path.to_path}",
+          "post.path: #{post.path}",
+        )
         if mdfilepath != post_path.to_path
           other_md_count += 1
         end
@@ -60,10 +66,10 @@ module Jekyll
             && !File.directory?(filepath) \
             && !File.fnmatch?('*.{md,markdown}', filepath, File::FNM_EXTGLOB | File::FNM_CASEFOLD)
           filepath = Pathname.new(filepath)
-          # Jekyll.logger.warn(
-          #   "[PostFiles]",
-          #   "-> attachment: #{filepath[site_src_dir.length..-1]}"
-          # )
+          Jekyll.logger.warn(
+            "[PostFiles]",
+            "-> attachment: #{filepath[site_src_dir.length..-1]}"
+          )
           if other_md_count > 0
             Jekyll.logger.abort_with(
               "[PostFiles]",
