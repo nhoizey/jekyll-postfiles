@@ -116,18 +116,20 @@ module Jekyll
       Jekyll.logger.warn("[PostFiles]", "_posts: #{posts_src_dir}")
       Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
-      # We will reject:
-      # - any file which is not markdown
-      # - any .md nested deeper than _posts/dir/post.md
+      # Reject any .md nested deeper than _posts/dir/post.md
       site.posts.docs.reject!{ |doc|
-        Pathname.new(doc.path).instance_eval{ |path|
-          # path.tap { Jekyll.logger.warn("[PostFiles]", "path: #{path}; extname: #{path.extname} inc: #{['md', '.markdown'].include?(path.extname)}") }
-          [
-            path.relative_path_from(posts_src_dir).each_filename.count > 2,
-            !['.md', '.markdown'].include?(path.extname)
-          ].any?
-        }
+        Pathname.new(doc.path).relative_path_from(posts_src_dir).each_filename.count > 2
       }
+
+      markdowns, assets = site.posts.docs.partition{ |doc|
+        ['.md', '.markdown'].include?(Pathname.new(doc.path).extname)
+      }
+
+      # reject assets
+      site.posts.docs = markdowns
+
+      Jekyll.logger.warn("[PostFiles]", "assets: #{assets.map(&:path)}")
+      Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
       # any directory deeper than _posts containing multiple .md?
       dirs_with_multi_md = site.posts.docs
@@ -142,8 +144,6 @@ module Jekyll
           "Sorry, there can be only one Markdown file in each directory containing other assets to be copied by jekyll-postfiles. Violations: #{dirs_with_multi_md.map{ |key,value| [key.to_s, value.map(&:to_s)] }.to_h}"
         )
       end
-
-      Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
       # Pathname.new('/Users/birch/Documents/tmp').relative_path_from(Pathname.new('/Users/birch')).each_filename.count
     end
   end
