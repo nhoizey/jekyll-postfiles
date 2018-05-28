@@ -104,6 +104,14 @@ module Jekyll
     #     cloudflare-architecture.png
     #     performance-report-sample.pdf
     # Generate content by copying files associated with each post.
+    #
+    # the working set (site.posts.docs) is proposed by:
+    # jekyll/lib/jekyll/readers/post_reader.rb#read_posts
+    #
+    # but this is subjected to a Document::DATE_FILENAME_MATCHER
+    # which filters out deeply-nested items (only folders named like a date can survive)
+    #
+    # moreover, renderers probably expect site.posts.docs to include only markdown
     def generate(site)
       # site.posts.docs.each do |post|
       #   copy_post_files(post)
@@ -125,7 +133,7 @@ module Jekyll
         ['.md', '.markdown'].include?(Pathname.new(doc.path).extname)
       }
 
-      # reject assets
+      # reject assets; they are not renderable documents
       site.posts.docs = markdowns
 
       Jekyll.logger.warn("[PostFiles]", "assets: #{assets.map(&:path)}")
@@ -144,6 +152,13 @@ module Jekyll
           "Sorry, there can be only one Markdown file in each directory containing other assets to be copied by jekyll-postfiles. Violations: #{dirs_with_multi_md.map{ |key,value| [key.to_s, value.map(&:to_s)] }.to_h}"
         )
       end
+
+      markdowns
+        .map{ |doc| Pathname.new(doc.path) }
+        .select{ |path|
+          path.relative_path_from(posts_src_dir).each_filename.count == 2
+        }
+
       # Pathname.new('/Users/birch/Documents/tmp').relative_path_from(Pathname.new('/Users/birch')).each_filename.count
     end
   end
