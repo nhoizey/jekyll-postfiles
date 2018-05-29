@@ -31,9 +31,10 @@ module Jekyll
     # Initialize a new PostFile.
     #
     # site - The Site.
-    # base - The String path to the <source>.
-    # dir - The String path of the source directory of the file (rel <source>).
-    # name - The String filename of the file.
+    # base - The String path to the <source> - /srv/jekyll
+    # dir  - The String path between <source> and the file - _posts/somedir
+    # name - The String filename of the file - cool.svg
+    # dest - The String path to the containing folder of the document which is output - /dist/blog/[:tag/]*:year/:month/:day
     def initialize(site, base, dir, name, dest)
       super(site, base, dir, name)
       @name = name
@@ -65,9 +66,9 @@ module Jekyll
     #     img/
     #       cool.png               # yes, even deeply-nested files are eligible to be copied.
     def generate(site)
-      site_src_dir = Pathname.new site.source
-      posts_src_dir = site_src_dir + '_posts'
-      drafts_src_dir = site_src_dir + '_drafts'
+      site_srcroot = Pathname.new site.source
+      posts_src_dir = site_srcroot + '_posts'
+      drafts_src_dir = site_srcroot + '_drafts'
 
       # Jekyll.logger.warn("[PostFiles]", "_posts: #{posts_src_dir}")
       # Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
@@ -81,22 +82,22 @@ module Jekyll
           }
         }
 
-      # Jekyll.logger.warn("[PostFiles]", "asset_roots: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
+      # Jekyll.logger.warn("[PostFiles]", "postdirs: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
 
       assets = docs_with_dirs.map{ |doc|
         dest_dir = Pathname.new(doc.destination("")).dirname
-        Pathname.new(doc.path).dirname.instance_eval{ |asset_root|
-          Dir[asset_root + '**/*']
+        Pathname.new(doc.path).dirname.instance_eval{ |postdir|
+          Dir[postdir + '**/*']
             .reject{ |fname| fname =~ FIXED_DATE_FILENAME_MATCHER }
             .reject{ |fname| File.directory? fname }
             .map { |fname|
-              path = Pathname.new fname
-              relpath = path.relative_path_from(site_src_dir)
-              filedir, filename = relpath.dirname, relpath.basename
+              asset_abspath = Pathname.new fname
+              srcroot_to_asset = asset_abspath.relative_path_from(site_srcroot)
+              srcroot_to_assetdir, asset_basename = srcroot_to_asset.dirname, srcroot_to_asset.basename
 
-              absfiledir = site_src_dir + filedir
-              new_dir = absfiledir.relative_path_from(asset_root)
-              PostFile.new(site, site_src_dir, filedir, filename, (dest_dir + new_dir).to_path)
+              assetdir_abs = site_srcroot + srcroot_to_assetdir
+              postdir_to_assetdir = assetdir_abs.relative_path_from(postdir)
+              PostFile.new(site, site_srcroot, srcroot_to_assetdir.to_path, asset_basename, (dest_dir + postdir_to_assetdir).to_path)
             }
         }
       }.flatten
