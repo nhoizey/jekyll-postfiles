@@ -1,0 +1,30 @@
+inherit_gem:
+  jekyll: .rubocop.yml
+
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - script/**/*
+    - vendor/**/*
+
+Lint/UselessAssignment:
+  Exclude:
+    - lib/jekyll/postfiles.rb
+Metrics/AbcSize:
+  Exclude:
+    - lib/jekyll/postfiles.rb
+Metrics/BlockNesting:
+  Exclude:
+    - lib/jekyll/postfiles.rb
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - lib/jekyll/postfiles.rb
+Metrics/LineLength:
+  Exclude:
+    - lib/jekyll/postfiles.rb
+Metrics/MethodLength:
+  Exclude:
+    - lib/jekyll/postfiles.rb
+Metrics/PerceivedComplexity:
+  Exclude:
+    - lib/jekyll/postfiles.rb
