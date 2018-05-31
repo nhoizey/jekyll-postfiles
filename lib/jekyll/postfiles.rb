@@ -20,7 +20,7 @@ module Jekyll
     #
     # our plugin changes the regex, to:
     #   avoid false positive when directory name matches date regex
-    Hooks.register :site, :after_reset do |site|
+    Hooks.register :site, :after_reset do |_site|
       # Suppress warning messages.
       original_verbose = $VERBOSE
       $VERBOSE = nil
@@ -48,7 +48,7 @@ module Jekyll
       # dest - The String path to the destination dir.
       #
       # Returns destination file path.
-      def destination(dest)
+      def destination(_dest)
         File.join(@dest, @name)
       end
     end
@@ -75,23 +75,23 @@ module Jekyll
         # Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
         docs_with_dirs = site.posts.docs
-          .reject { |doc|
-            Pathname.new(doc.path).dirname.instance_eval { |dirname|
-              [posts_src_dir, drafts_src_dir].reduce(false) { |acc, dir|
+          .reject do |doc|
+            Pathname.new(doc.path).dirname.instance_eval do |dirname|
+              [posts_src_dir, drafts_src_dir].reduce(false) do |acc, dir|
                 acc || dirname.eql?(dir)
-              }
-            }
-          }
+              end
+            end
+          end
 
         # Jekyll.logger.warn("[PostFiles]", "postdirs: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
 
-        assets = docs_with_dirs.map { |doc|
+        assets = docs_with_dirs.map do |doc|
           dest_dir = Pathname.new(doc.destination("")).dirname
-          Pathname.new(doc.path).dirname.instance_eval { |postdir|
+          Pathname.new(doc.path).dirname.instance_eval do |postdir|
             Dir[postdir + "**/*"]
               .reject { |fname| fname =~ FIXED_DATE_FILENAME_MATCHER }
               .reject { |fname| File.directory? fname }
-              .map { |fname|
+              .map do |fname|
                 asset_abspath = Pathname.new fname
                 srcroot_to_asset = asset_abspath.relative_path_from(site_srcroot)
                 srcroot_to_assetdir = srcroot_to_asset.dirname
@@ -100,9 +100,9 @@ module Jekyll
                 assetdir_abs = site_srcroot + srcroot_to_assetdir
                 postdir_to_assetdir = assetdir_abs.relative_path_from(postdir)
                 PostFile.new(site, site_srcroot, srcroot_to_assetdir.to_path, asset_basename, (dest_dir + postdir_to_assetdir).to_path)
-              }
-          }
-        }.flatten
+              end
+          end
+        end.flatten
 
         site.static_files.concat(assets)
       end

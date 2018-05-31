@@ -25,6 +25,9 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Exclude:
     - lib/jekyll/postfiles.rb
+Metrics/ParameterLists:
+  Exclude:
+    - lib/jekyll/postfiles.rb
 Metrics/PerceivedComplexity:
   Exclude:
     - lib/jekyll/postfiles.rb
