@@ -1,4 +1,5 @@
-require "jekyll/postfiles/version"
+# frozen_string_literal: true
+
 require "jekyll"
 require "pathname"
 
@@ -21,14 +22,14 @@ module Jekyll
     #   avoid false positive when directory name matches date regex
     Hooks.register :site, :after_reset do |site|
       # Suppress warning messages.
-      original_verbose, $VERBOSE = $VERBOSE, nil
-      Document.const_set('DATE_FILENAME_MATCHER', PostFileGenerator::FIXED_DATE_FILENAME_MATCHER)
+      original_verbose = $VERBOSE
+      $VERBOSE = nil
+      Document.const_set("DATE_FILENAME_MATCHER", PostFileGenerator::FIXED_DATE_FILENAME_MATCHER)
       # Activate warning messages again.
       $VERBOSE = original_verbose
     end
 
     class PostFile < StaticFile
-
       # Initialize a new PostFile.
       #
       # site - The Site.
@@ -53,7 +54,6 @@ module Jekyll
     end
 
     class PostFileGenerator < Generator
-
       FIXED_DATE_FILENAME_MATCHER = %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-([^/]*)(\.[^.]+)$!
 
       # _posts/
@@ -68,14 +68,14 @@ module Jekyll
       #       cool.png               # yes, even deeply-nested files are eligible to be copied.
       def generate(site)
         site_srcroot = Pathname.new site.source
-        posts_src_dir = site_srcroot + '_posts'
-        drafts_src_dir = site_srcroot + '_drafts'
+        posts_src_dir = site_srcroot + "_posts"
+        drafts_src_dir = site_srcroot + "_drafts"
 
         # Jekyll.logger.warn("[PostFiles]", "_posts: #{posts_src_dir}")
         # Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
         docs_with_dirs = site.posts.docs
-          .reject{ |doc|
+          .reject { |doc|
             Pathname.new(doc.path).dirname.instance_eval{ |dirname|
               [posts_src_dir, drafts_src_dir].reduce(false) {|acc, dir|
                 acc || dirname.eql?(dir)
@@ -89,8 +89,8 @@ module Jekyll
           dest_dir = Pathname.new(doc.destination("")).dirname
           Pathname.new(doc.path).dirname.instance_eval{ |postdir|
             Dir[postdir + '**/*']
-              .reject{ |fname| fname =~ FIXED_DATE_FILENAME_MATCHER }
-              .reject{ |fname| File.directory? fname }
+              .reject { |fname| fname =~ FIXED_DATE_FILENAME_MATCHER }
+              .reject { |fname| File.directory? fname }
               .map { |fname|
                 asset_abspath = Pathname.new fname
                 srcroot_to_asset = asset_abspath.relative_path_from(site_srcroot)
