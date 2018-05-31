@@ -1,6 +1,6 @@
-require 'jekyll-postfiles/version'
 # frozen_string_literal: true
 
+require 'jekyll/postfiles/version'
 $LOAD_PATH.unshift(File.expand_path("lib", __dir__))
 
 Gem::Specification.new do |spec|
