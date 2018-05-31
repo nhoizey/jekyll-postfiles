@@ -196,7 +196,7 @@ Just put the images (and PDFs, etc.) in the same folder as your Markdown files, 
 
 ## Contributing
 
-Thanks for your interest in contributing! There are many ways to contribute to this project. Get started here (https://github.com/nhoizey/jekyll-postfiles/blob/master/CONTRIBUTING.md).
+Thanks for your interest in contributing! There are many ways to contribute to this project. [Get started here](https://github.com/nhoizey/jekyll-postfiles/blob/master/CONTRIBUTING.md).
 
 ## License
 
