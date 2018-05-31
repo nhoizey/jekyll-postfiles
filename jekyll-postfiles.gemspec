@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://nhoizey.github.io/jekyll-postfiles/"
   spec.authors = ["Nicolas Hoizey"]
   spec.email = ["nicolas@hoizey.com"]
-  spec.files = %w(Rakefile Gemfile README.md LICENSE) + Dir["lib/**/*"]
+  spec.files = %w(Rakefile Gemfile README.md RELEASES.md LICENSE) + Dir["lib/**/*"]
   spec.summary = "A Jekyll plugin to keep posts assets alongside their Markdown files"
   spec.name = "jekyll-postfiles"
   spec.license = "MIT"

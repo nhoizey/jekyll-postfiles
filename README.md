@@ -6,7 +6,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-## Table of contents
 
 - [Easing the management of images (and other files) attached to Markdown posts](#easing-the-management-of-images-and-other-files-attached-to-markdown-posts)
   - [The pain of Jekyll's recommended posts assets management](#the-pain-of-jekylls-recommended-posts-assets-management)
@@ -202,7 +201,7 @@ Just put the images (and PDFs, etc.) in the same folder as your Markdown files, 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at [https://github.com/nhoizey/jekyll-postfiles](https://github.com/nhoizey/jekyll-postfiles)
+Thanks for your interest in contributing! There are many ways to contribute to this project. Get started here (https://github.com/nhoizey/jekyll-postfiles/blob/master/CONTRIBUTING.md).
 
 ## License
 
