@@ -76,8 +76,8 @@ module Jekyll
 
         docs_with_dirs = site.posts.docs
           .reject { |doc|
-            Pathname.new(doc.path).dirname.instance_eval{ |dirname|
-              [posts_src_dir, drafts_src_dir].reduce(false) {|acc, dir|
+            Pathname.new(doc.path).dirname.instance_eval { |dirname|
+              [posts_src_dir, drafts_src_dir].reduce(false) { |acc, dir|
                 acc || dirname.eql?(dir)
               }
             }
@@ -85,16 +85,17 @@ module Jekyll
 
         # Jekyll.logger.warn("[PostFiles]", "postdirs: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
 
-        assets = docs_with_dirs.map{ |doc|
+        assets = docs_with_dirs.map { |doc|
           dest_dir = Pathname.new(doc.destination("")).dirname
-          Pathname.new(doc.path).dirname.instance_eval{ |postdir|
-            Dir[postdir + '**/*']
+          Pathname.new(doc.path).dirname.instance_eval { |postdir|
+            Dir[postdir + "**/*"]
               .reject { |fname| fname =~ FIXED_DATE_FILENAME_MATCHER }
               .reject { |fname| File.directory? fname }
               .map { |fname|
                 asset_abspath = Pathname.new fname
                 srcroot_to_asset = asset_abspath.relative_path_from(site_srcroot)
-                srcroot_to_assetdir, asset_basename = srcroot_to_asset.dirname, srcroot_to_asset.basename
+                srcroot_to_assetdir = srcroot_to_asset.dirname
+                asset_basename = srcroot_to_asset.basename
 
                 assetdir_abs = site_srcroot + srcroot_to_assetdir
                 postdir_to_assetdir = assetdir_abs.relative_path_from(postdir)
