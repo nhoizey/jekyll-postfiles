@@ -174,30 +174,25 @@ Handy, isn't it?
 
 ## Installation
 
-Add this line to your `Gemfile`:
+Add `gem 'jekyll-postfiles'` to the `jekyll_plugin` group in your `Gemfile`:
 
 ```ruby
-gem 'jekyll-postfiles'
+source 'https://rubygems.org'
+
+gem 'jekyll'
+
+group :jekyll_plugins do
+  gem 'jekyll-postfiles'
+end
 ```
 
-Execute this:
-
-```shell
-bundle
-```
-
-And add this line to your `_config.yml`:
-
-```yaml
-gems:
-  - jekyll-postfiles
-```
+Then run `bundle` to install the gem.
 
 ## Usage
 
 You don't have anything to do.
 
-Just put the images (and PDFs, etc.) in the same folder as your Markdown files, and use the standard Markdown image syntax, without any path.
+Just put the images (and PDFs, etc.) in the same folder as your Markdown files, or even subfolders, and use the standard Markdown image syntax, with a relative path.
 
 ## Contributing
 
