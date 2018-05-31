@@ -1,0 +1,8 @@
+title: Jekyll Post Files
+description: A Jekyll plugin that copies static files from the _posts to the _site folder
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
