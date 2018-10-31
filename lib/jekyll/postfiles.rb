@@ -54,7 +54,7 @@ module Jekyll
     end
 
     class PostFileGenerator < Generator
-      FIXED_DATE_FILENAME_MATCHER = %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-([^/]*)(\.[^.]+)$!
+      FIXED_DATE_FILENAME_MATCHER = %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-([^/]*)(\.[^.]+)$!.freeze
 
       # _posts/
       #   2018-01-01-whatever.md     # there's a date on this filename, so it will be treated as a post
