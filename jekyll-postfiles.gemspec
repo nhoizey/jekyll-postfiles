@@ -17,9 +17,11 @@ Gem::Specification.new do |spec|
     This plugin takes any file that is in posts folders, and copy them to the folder in which the post HTML page will be created.
   DESC
 
+  spec.required_ruby_version = ">= 2.3.0"
+
   spec.add_runtime_dependency "jekyll", "~> 3.6"
 
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 12.0"
-  spec.add_development_dependency "rubocop", "~> 0.55.0"
+  spec.add_development_dependency "rubocop", "~> 0.60.0"
 end
