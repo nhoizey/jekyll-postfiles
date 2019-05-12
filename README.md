@@ -194,6 +194,10 @@ You don't have anything to do.
 
 Just put the images (and PDFs, etc.) in the same folder as your Markdown files, or even subfolders, and use the standard Markdown image syntax, with a relative path.
 
+## Compatibility
+
+:warning: This plugin is not supported by Github Pages, host your site on services like https://netlify.com which support third party plugins.
+
 ## Contributing
 
 Thanks for your interest in contributing! There are many ways to contribute to this project. [Get started here](https://github.com/nhoizey/jekyll-postfiles/blob/master/CONTRIBUTING.md).
