@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     jekyll-postfiles (2.1.1)
-      jekyll (>= 3.6, < 5)
+      jekyll (>= 3.8.6, < 5)
 
 GEM
   remote: https://rubygems.org/
@@ -16,7 +16,7 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     eventmachine (1.2.7)
-    ffi (1.11.1)
+    ffi (1.11.2)
     forwardable-extended (2.6.0)
     http_parser.rb (0.6.0)
     i18n (0.9.5)
@@ -52,7 +52,7 @@ GEM
       forwardable-extended (~> 2.6)
     public_suffix (4.0.1)
     rainbow (3.0.0)
-    rake (13.0.0)
+    rake (13.0.1)
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
