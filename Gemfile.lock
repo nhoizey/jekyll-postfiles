@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     jekyll-postfiles (2.1.1)
-      jekyll (>= 3.6, < 5)
+      jekyll (>= 3.8.6, < 5)
 
 GEM
   remote: https://rubygems.org/
@@ -16,12 +16,12 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     eventmachine (1.2.7)
-    ffi (1.11.1)
+    ffi (1.11.3)
     forwardable-extended (2.6.0)
     http_parser.rb (0.6.0)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
-    jaro_winkler (1.5.3)
+    jaro_winkler (1.5.4)
     jekyll (3.8.6)
       addressable (~> 2.4)
       colorator (~> 1.0)
@@ -41,11 +41,11 @@ GEM
       listen (~> 3.0)
     kramdown (1.17.0)
     liquid (4.0.3)
-    listen (3.2.0)
+    listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.3.6)
-    parallel (1.18.0)
+    parallel (1.19.1)
     parser (2.6.5.0)
       ast (~> 2.4.0)
     pathutil (0.16.2)
@@ -56,8 +56,8 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
-    rouge (3.12.0)
-    rubocop (0.76.0)
+    rouge (3.14.0)
+    rubocop (0.78.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.6)
@@ -80,7 +80,7 @@ DEPENDENCIES
   bundler (~> 1.16)
   jekyll-postfiles!
   rake (~> 13.0)
-  rubocop (~> 0.76.0)
+  rubocop (~> 0.78.0)
 
 BUNDLED WITH
    1.16.2
