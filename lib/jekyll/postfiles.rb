@@ -74,7 +74,12 @@ module Jekyll
 
         # Jekyll.logger.warn("[PostFiles]", "postdirs: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
 
+        config = site.config["postfiles"] || Hash.new()
+        force_dir = config["force_dir"]
+
         assets = docs_with_dirs(site).map do |doc|
+          document_force_subdir(doc) if force_dir
+
           dest_dir = Pathname.new(doc.destination("")).dirname
           Pathname.new(doc.path).dirname.instance_eval do |postdir|
             Dir[postdir + "**/*"]
@@ -113,6 +118,22 @@ module Jekyll
             self.class.is_postfile?(doc.relative_path)
           end
         end.flatten
+      end
+
+      # force the documents permalink to be within a subdirectory.
+      def document_force_subdir(doc)
+        col_permalink = doc&.collection&.metadata&.dig("permalink")
+        replace_permalink = if doc.permalink
+                              doc.permalink if !doc.permalink.end_with?("/")
+                            elsif col_permalink
+                              col_permalink if !col_permalink.end_with?("/")
+                            end
+
+        if replace_permalink
+          doc.data["permalink"] = File.join(
+            File.dirname(replace_permalink),
+            replace_permalink.split('/')[-1].delete_suffix(":output_ext") + '/')
+        end
       end
     end
 
