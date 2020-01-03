@@ -68,25 +68,13 @@ module Jekyll
       #       cool.png               # yes, even deeply-nested files are eligible to be copied.
       def generate(site)
         site_srcroot = Pathname.new site.source
-        collections_dir = site.config.fetch('collections_dir', '.')
-        posts_src_dir = site_srcroot + collections_dir + "_posts"
-        drafts_src_dir = site_srcroot + collections_dir + "_drafts"
 
         # Jekyll.logger.warn("[PostFiles]", "_posts: #{posts_src_dir}")
         # Jekyll.logger.warn("[PostFiles]", "docs: #{site.posts.docs.map(&:path)}")
 
-        docs_with_dirs = site.posts.docs
-          .reject do |doc|
-            Pathname.new(doc.path).dirname.instance_eval do |dirname|
-              [posts_src_dir, drafts_src_dir].reduce(false) do |acc, dir|
-                acc || dirname.eql?(dir)
-              end
-            end
-          end
-
         # Jekyll.logger.warn("[PostFiles]", "postdirs: #{docs_with_dirs.map{|doc| Pathname.new(doc.path).dirname}}")
 
-        assets = docs_with_dirs.map do |doc|
+        assets = docs_with_dirs(site).map do |doc|
           dest_dir = Pathname.new(doc.destination("")).dirname
           Pathname.new(doc.path).dirname.instance_eval do |postdir|
             Dir[postdir + "**/*"]
@@ -97,16 +85,52 @@ module Jekyll
                 srcroot_to_asset = asset_abspath.relative_path_from(site_srcroot)
                 srcroot_to_assetdir = srcroot_to_asset.dirname
                 asset_basename = srcroot_to_asset.basename
-
                 assetdir_abs = site_srcroot + srcroot_to_assetdir
+
                 postdir_to_assetdir = assetdir_abs.relative_path_from(postdir)
-                PostFile.new(site, site_srcroot, srcroot_to_assetdir.to_path, asset_basename, (dest_dir + postdir_to_assetdir).to_path)
+                PostFile.new(
+                  site, site_srcroot, srcroot_to_assetdir.to_path,
+                  asset_basename, (dest_dir + postdir_to_assetdir).to_path)
               end
           end
         end.flatten
 
         site.static_files.concat(assets)
       end
+
+      # determine whether file at path is a file path.
+      # @param [String] path should be a relative path from the collection
+      #                 directory to the file in question.
+      def self.is_postfile?(file_path)
+        File.dirname(file_path).delete_suffix('/').count('/') > 0
+      end
+
+      private
+
+      def docs_with_dirs(site)
+        site.collections.values.map do |collection|
+          collection.docs.reject(&:draft?).select do |doc|
+            self.class.is_postfile?(doc.relative_path)
+          end
+        end.flatten
+      end
     end
+
+    # even when we include a post files from a directory in the jekyll build
+    # the collection still generates a StaticFile instance for the post file.
+    # meaning we end up with the same files in both the same directory as the
+    # posts permalink and it's original directory.
+    #
+    # NOTE maybe it'd be better to find the static file and change it's
+    #      permalink, rather than creating a PostFile instance referencing
+    #      the same file and then hiding that file here.
+    module CollectionExcludePostFiles
+      def read_static_file(file_path, full_path)
+        relative_path = File.join(relative_directory, file_path)
+        super unless PostFileGenerator.is_postfile?(relative_path)
+      end
+    end
+
+    Collection.prepend(CollectionExcludePostFiles)
   end
 end
