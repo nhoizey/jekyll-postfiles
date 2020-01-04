@@ -77,14 +77,18 @@ module Jekyll
         config = site.config["postfiles"] || Hash.new()
         force_dir = config["force_dir"]
 
-        assets = docs_with_dirs(site).map do |doc|
+        docs = docs_with_dirs(site)
+        docs_paths = docs.map(&:path)
+        assets = docs.map do |doc|
           document_force_subdir(doc) if force_dir
 
           dest_dir = Pathname.new(doc.destination("")).dirname
           Pathname.new(doc.path).dirname.instance_eval do |postdir|
+            # TODO maybe remove FIXED_DATE_FILENAME_MATCHER check
             Dir[postdir + "**/*"]
               .reject { |fname| fname =~ FIXED_DATE_FILENAME_MATCHER }
               .reject { |fname| File.directory? fname }
+              .reject { |fname| docs_paths.include?(fname) }
               .map do |fname|
                 asset_abspath = Pathname.new fname
                 srcroot_to_asset = asset_abspath.relative_path_from(site_srcroot)
@@ -103,7 +107,7 @@ module Jekyll
         site.static_files.concat(assets)
       end
 
-      # determine whether file at path is a file path.
+      # determine whether file at path is a postfile path.
       # @param [String] path should be a relative path from the collection
       #                 directory to the file in question.
       def self.is_postfile?(file_path)
