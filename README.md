@@ -108,7 +108,7 @@ Much easier!
 - Easy to store, everything is in one single folder.
 - Easy to write, no path to add to file links
 - Easy to update
-- Easy to move from `_drafts/` to `_posts/`, without anything to change in the Mardown content
+- Easy to move from `_drafts/` to `_posts/`, without anything to change in the Markdown content
 - Easy to edit in any editor with live preview
 
 ### Not every assets need this
