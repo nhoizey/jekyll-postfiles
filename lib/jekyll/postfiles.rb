@@ -53,6 +53,27 @@ module Jekyll
       end
     end
 
+    # searches through each post, prior to rendering 
+    # looks for strings that match the pattern: (inline image)
+    #     ![alt text](image.ext)
+    # For each one, rewrites using site URL, page ID, original alt text and url
+    #
+    # Assuming:
+    #   a site of https://www.blog.com
+    #   a permalink format of "/archive/:year/:month/:day/:title/"
+    #   a new post of /_posts/2018/06/18/some-post/2018-06-18-some-post.md
+    #   an inline image of /_posts/2018/06/108/some-post/image.jpg
+    #   with the markup of ![Awesome Image](image.jpg)
+    #
+    # Gets rewritten immediately back into the post as:
+    #   ![Awesome Image](https://www.blog.com/archive/2018/06/18/some-post/image.jpg)
+    #
+    Jekyll::Hooks.register :posts, :pre_render do |post, hash|
+      post.to_s.gsub!(/!\[(.*?)\]\((.*?)\)/) do |match| 
+        "![#{$1}](#{hash.site["url"]}#{hash.page.id}/#{$2})"
+      end
+    end
+
     class PostFileGenerator < Generator
       FIXED_DATE_FILENAME_MATCHER = %r!^(?:.+/)*(\d{2,4}-\d{1,2}-\d{1,2})-([^/]*)(\.[^.]+)$!.freeze
 
