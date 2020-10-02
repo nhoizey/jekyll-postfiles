@@ -5,3 +5,4 @@ before_install:
     - gem install bundler
 script:
   - bundle exec rspec
+cache: bundler
