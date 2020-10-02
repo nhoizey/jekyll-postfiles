@@ -2,6 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/jekyll-postfiles.svg)](https://badge.fury.io/rb/jekyll-postfiles)
 [![Gem Downloads](https://img.shields.io/gem/dt/jekyll-postfiles.svg?style=flat)](http://rubygems.org/gems/jekyll-postfiles)
+[![Build Status](https://travis-ci.org/nhoizey/jekyll-postfiles.svg?branch=master)](https://travis-ci.org/nhoizey/jekyll-postfiles)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
