@@ -9,10 +9,14 @@ describe Jekyll::PostFiles do
 
   before do
     Jekyll.logger.log_level = :error
+    site.process
   end
 
-  it "copies files" do
-    site.process
-    expect(Pathname.new(File.expand_path('', dest_dir))).to exist
+  it "copies image from global assets folder" do
+    expect(Pathname.new(File.expand_path('assets/jekyll.png', dest_dir))).to exist
+  end
+
+  it "copies image from post folder" do
+    expect(Pathname.new(File.expand_path('2016/06/09/cloudflare.png', dest_dir))).to exist
   end
 end
