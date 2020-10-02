@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rubocop", "~> 0.76.0"
   spec.add_development_dependency "rspec", "~> 3.5"
+  spec.add_development_dependency "kramdown-parser-gfm", "~> 1.1.0"
 end
